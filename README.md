@@ -9,7 +9,7 @@ This lab is based on the one built by Arjun Brar and is found here
 
 https://github.com/boomcan90/uniswap-v3
 
-## Setup and pre-requisites
+## Setup and prerequisites
 
 We will be using git, Node.js, and Hardhat. These tools were installed in Lab 1. In addition, we need to establish an account at [Alchemy](https://alchemy.com/). We do this so that we can copy a part of the Ethereum mainnet to our local machine.
 
