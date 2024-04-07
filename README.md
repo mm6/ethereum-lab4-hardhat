@@ -15,13 +15,13 @@ We will be using git, Node.js, and Hardhat. These tools were installed in Lab 1.
 
 We will be using ETH, Wrapped ETH (WETH), DAI, and Uniswap version 3.
 
-0. Create a new directory named Uniswap-Test and, witin it, clone a repository.
+0. Create a new directory named Uniswap-Test and, within it, clone a repository.
 
 ```
 mkdir Uniswap-Test
 cd Uniswap-Test
 git clone https://github.com/mm6/uniswap-v3.git
-git clone https://github.com/boomcan90/uniswap-v3.git
+
 ```
 
 1. cd into the new directory named uniswap-v3.
