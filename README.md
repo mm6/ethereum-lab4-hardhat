@@ -16,7 +16,8 @@ https://github.com/boomcan90/uniswap-v3
 
 ## Setup and prerequisites
 
-We will be using git, Node.js, and Hardhat. These tools were installed in Lab 1. In addition, we need to establish an account at [Alchemy](https://alchemy.com/). We do this so that we can copy a part of the Ethereum mainnet to our local machine.
+We will be using git, Node.js, and Hardhat. These tools were installed in Lab 1. In addition, we need to establish an account at Alchemy. You will need a free API key provided by Alchemy.
+We do this so that we can copy a part of the Ethereum Mainnet to our local machine.
 
 We will be using ETH, Wrapped ETH (WETH), DAI, and Uniswap version 3.
 
@@ -69,9 +70,9 @@ npm install
 
 ```
 
-4. Visit the Alchemy Dashboard and get an API key.
+4. Visit the Alchemy Dashboard [Alchemy](https://alchemy.com/) and get a free API key.
 
-5. Run the following command:
+5. Run the following command and replace <API_KEY> with the API key.
 
 ```
 npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/<API_KEY>
