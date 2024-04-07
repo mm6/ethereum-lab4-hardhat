@@ -1,11 +1,16 @@
+##  Developing Blockchain Use Cases Spring 2024 Lab 4 (Optional work)
+### Carnegie Mellon University
+### Due: No due date
+### 0 Points
+### Deliverable: None
 
-## Ethereum-Lab4-Hardhat
+**Learning Objectives:**
 
-# Working with Uniswap v3
+In this short lab, we interact with a Uniswap V3 contract using Hardhat and Alchemy.
 
-## Acknowledgements
+#### Acknowledgements
 
-This lab is based on the one built by Arjun Brar and is found here
+This lab is based on the one built by Arjun Brar and is found here:
 
 https://github.com/boomcan90/uniswap-v3
 
