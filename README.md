@@ -109,26 +109,27 @@ Welcome to Node.js v20.11.1
 Type ".help" for more information.
 >
 ```
-We need the ethers object from the hardhat module.
+9. We need the ethers object from the hardhat module. Execute the following line of Javascript.
 
 ```js
 const { ethers } = require("hardhat");
 ```
-We need access to the WETH contract. So, we use the well known address of the WETH contract.
-This is an ERC-20 contract.
+10. We need access to the WETH contract. So, we use the well known address of the WETH contract.
+This is an ERC-20 contract. Execute the following line of Javascript.
 
 ```js
 const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 ```
-We need access to the DAI contract. The DAI contract provides a stable coin so that 1 DAI = 1 USD.
-It also has a well known address. In a later command, we need the DAI_DECIMALs.
+
+11. We need access to the DAI contract. The DAI contract provides a stable coin so that 1 DAI = 1 USD.
+It also has a well known address. In a later command, we need the DAI_DECIMALs. Execute the following lines of Javascript.
 
 ```js
 const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 const DAI_DECIMALS = 18;
 ```
 
-A swap router is an important player and is used to facilitate token swaps between
+12. A swap router is an important player and is used to facilitate token swaps between
 different ERC-20 tokens. A user can swap one token for another without using a
 centralized exchange.
 
@@ -138,14 +139,14 @@ of tokens) to achieve the desired swap. The swap router collects trading fees (e
 from users and these fees are distributed to liquidity providers based upon the liquidity
 providers contribution to the pool.
 
-Here, we use the well known address of the uniswap router.
+Here, we use the well known address of the uniswap router. Execute the following line of Javascript.
 
 ```js
 const SwapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 ```
 
-Here, we define an Application Binary Interface (ABI) for the ERC-20 contracts. The function
-signatures are defined so that the caller will know how to encode the requests.
+13. Here, we define an Application Binary Interface (ABI) for the ERC-20 contracts. The function
+signatures are defined so that the caller will know how to encode the requests. Execute the following lines of Javascript.
 
 ```js
 const ercAbi = [
@@ -157,7 +158,8 @@ const ercAbi = [
   "function approve(address spender, uint256 amount) returns (bool)",
 ];
 ```
-Next, we deploy a simple swap contract. Note that it needs to know the address of the swap router.
+14. Next, we deploy a simple swap contract. Note that it needs to know the address of the swap router.
+Execute the following lines of Javascript.
 
 ```js
 /* Deploy the SimpleSwap contract */
@@ -166,23 +168,26 @@ const simpleSwap = await simpleSwapFactory.deploy(SwapRouterAddress);
 await simpleSwap.waitForDeployment();
 ```
 
-Next, we need signers (with ETH) who are able to sign transactions.
+15. Next, we need signers (with ETH) who are able to sign transactions. Execute the following line of Javascript.
 
 ```js
 let signers = await ethers.getSigners();
 ```
 
-Establish a constant (WETH) containing information that we need to perform
+16. Establish a constant (WETH) containing information that we need to perform
 a transaction.
 
 There is no deployment here. This contract already exists on the mainnet.
+
+Execute the following line of Javascript.
 
 
 ```js
 const WETH = new ethers.Contract(WETH_ADDRESS, ercAbi, signers[0]);
 ```
 
-Trade ETH for some WETH. Place the WETH into our account on the WETH contract.
+17. Trade ETH for some WETH. Place the WETH into our account on the WETH contract.
+Execute the following line of Javascript.
 
 ```js
 const deposit = await WETH.deposit({ value: ethers.parseEther("10") });
@@ -193,19 +198,21 @@ Wait for the deposit to complete.
 await deposit.wait();
 ```
 
-The approve call is essential for granting permission to the DEX contract to handle
+18. The approve call is essential for granting permission to the DEX contract to handle
 token transfers on behalf of the user during swaps.
 
 We can now approve the contract to spend our WETH. This can be done
 by running the following commands.
 
+Execute the following line of Javascript.
+
 ```js
 await WETH.approve(simpleSwap.target, ethers.parseEther("1"));
 ```
 
-Finally, we're ready to swap our WETH for DAI.
+19. Finally, we're ready to swap our WETH for DAI.
 
-Get access to the DAI contract.
+Get access to the DAI contract. Execute the following line of Javascript.
 
 ```js
 
@@ -225,7 +232,7 @@ await swap.wait();
 
 ```
 
-Check our DAI balance:
+20. Check our DAI balance. Execute the following lines of Javascript.
 
 ```js
 
