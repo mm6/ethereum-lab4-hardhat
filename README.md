@@ -246,3 +246,62 @@ const expandedDAIBalance = await DAI.balanceOf(signers[0].address);
 const DAIBalance = Number(ethers.formatUnits(expandedDAIBalance, DAI_DECIMALS));
 console.log("DAI Balance: ", DAIBalance);
 ```
+
+21. Let's examine the contract that is called by this console interaction. Comments have been
+added to the code.
+
+```
+// SPDX-License-Identifier: GPL-2.0-or-later
+pragma solidity =0.7.6;
+
+// We want to use the new v2 abi encoder. v2 provides more features
+// than v1. This is all about encoding requests.
+
+pragma abicoder v2;
+
+// We want to interact with Uniswap's V3 swap router.
+import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
+
+// Utilities are available for transferring tokens and handling errors.
+import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
+
+contract SimpleSwap {
+    ISwapRouter public immutable swapRouter;
+    uint24 public constant feeTier = 3000;    // Three fee tier's are available
+                                              // These are .05%, .30 %, and 1.00%.
+                                              // 1.00% is used for pools with less
+                                              // liquidity.
+
+    // Inititialze SimpleSwap with a reference to the Uniswap router.
+    constructor(ISwapRouter _swapRouter) {
+        swapRouter = _swapRouter;
+    }
+
+    // The arguments from and to are pointers to the two token contracts.
+    function swapERCforERC(address from, address to, uint amountIn) external returns (uint256 amountOut) {
+
+        // Transfer the specified amount of ERC to this contract.
+        // msg.sender is a holder of the from tokens.
+        // We are taking tokens from the sender and giving the contract ownership.
+        TransferHelper.safeTransferFrom(from, msg.sender, address(this), amountIn);
+        // Approve the router to spend ERC.
+        // This approval is necessary for the router to execute the swap on behalf of the contract.
+        TransferHelper.safeApprove(from, address(swapRouter), amountIn);
+        // Create the params that will be used to execute the swap
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: from,                  // The from token
+                tokenOut: to,                   // The to token
+                fee: feeTier,                   // Each liquidity pool has a specific fee tier
+                recipient: msg.sender,          // The receiver of the to token
+                deadline: block.timestamp,      // The deadline when the swap must be executed
+                amountIn: amountIn,             // The amount of the from token
+                amountOutMinimum: 0,            // Minimal acceptable out token
+                sqrtPriceLimitX96: 0            // When not zero, allows control of price impact of swaps
+            });
+        // The call to `exactInputSingle` executes the swap.
+        amountOut = swapRouter.exactInputSingle(params);
+        return amountOut;
+    }
+}
+```
