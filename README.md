@@ -115,7 +115,7 @@ Type ".help" for more information.
 const { ethers } = require("hardhat");
 ```
 10. We need access to the WETH contract. So, we use the well known address of the WETH contract.
-This is an ERC-20 contract. Execute the following line of Javascript.
+This is an ERC-20 contract (Wrapped Eth) and trades 1 to 1 with eth. Execute the following line of Javascript.
 
 ```js
 const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -179,6 +179,8 @@ a transaction.
 
 There is no deployment here. This contract already exists on the mainnet.
 
+We are using the first account (signers[0]) to sign and pay for transactions.
+
 Execute the following line of Javascript.
 
 
@@ -187,6 +189,7 @@ const WETH = new ethers.Contract(WETH_ADDRESS, ercAbi, signers[0]);
 ```
 
 17. Trade ETH for some WETH. Place the WETH into our account on the WETH contract.
+We are sending 10 eth to the WETH contract in exchange for 10 WETH.
 Execute the following line of Javascript.
 
 ```js
@@ -198,11 +201,11 @@ Wait for the deposit to complete.
 await deposit.wait();
 ```
 
-18. The approve call is essential for granting permission to the DEX contract to handle
-token transfers on behalf of the user during swaps.
+18. The approve call is essential for granting permission to the decentralized exchange
+(DEX) contract to handle token transfers on behalf of the user during swaps.
 
-We can now approve the contract to spend our WETH. This can be done
-by running the following commands.
+We can now approve the swap contract to spend 1 WETH. It will need to reduce
+our WETH and increase our DAI. This can be done by running the following commands.
 
 Execute the following line of Javascript.
 
@@ -219,7 +222,9 @@ Get access to the DAI contract. Execute the following line of Javascript.
 const DAI = new ethers.Contract(DAI_ADDRESS, ercAbi, signers[0]);
 ```
 
-Establish the amount.
+Establish the amount to exchange. This is .1, the amount of WETH to be swapped.
+Note, we will not spend more on gas that 300000.
+
 ```js
 
 const amountIn = ethers.parseEther("0.1");
@@ -232,7 +237,8 @@ await swap.wait();
 
 ```
 
-20. Check our DAI balance. Execute the following lines of Javascript.
+20. Check our DAI balance by visiting the balanceOf on the DAI contract.
+    Execute the following lines of Javascript.
 
 ```js
 
