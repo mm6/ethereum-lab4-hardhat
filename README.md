@@ -70,9 +70,14 @@ npm install
 
 ```
 
-4. Visit the Alchemy Dashboard [Alchemy](https://alchemy.com/) and get a free API key.
+4. Visit the Alchemy Dashboard [Alchemy](https://alchemy.com/) and get a free API key. You can do this by creating an app.
 
-5. Run the following command and replace <API_KEY> with the API key.
+5. We want to run a local Ethereum node. We can deploy and test
+smart contracts without using the Ethereum Mainnet. The fork
+command creates a local copy of the Mainnet state (a snapshot).
+The url points to an archive node on Alchemy. We will be able to interact with a local node as if it had all of the state of the Mainnet.
+
+Run the following command and replace <API_KEY> with the API key.
 
 ```
 npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/<API_KEY>
