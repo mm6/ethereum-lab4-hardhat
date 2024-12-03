@@ -1,4 +1,4 @@
-##  Blockchain and SQL Fundamentals Fall 2024 Lab 4 (In class exercise)
+##  Blockchain and SQL Fundamentals Fall 2024 Lab 4 (In-class exercise)
 ### Carnegie Mellon University
 ### Due: No due date
 ### 0 Points
@@ -19,7 +19,7 @@ https://github.com/boomcan90/uniswap-v3
 We will be using git, Node.js, and Hardhat. These tools were installed in Lab 1. In addition, we need to establish an account at Alchemy. You will need a free API key provided by Alchemy.
 We do this so that we can copy a part of the Ethereum Mainnet to our local machine.
 
-We will be using ETH, Wrapped ETH (WETH), DAI, and Uniswap version 3.
+We will be using ETH, Wrapped ETH (WETH), DAI, and Uniswap V3.
 
 0. Create a new directory named Uniswap-Test and, within it, clone a repository.
 
