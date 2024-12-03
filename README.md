@@ -63,14 +63,14 @@ module.exports = {
 }
 
 ```
-3. Run the following command:
+3. Run the following command to install dependencies and populate the node_modules directory:
 
 ```
 npm install
 
 ```
 
-4. Visit the Alchemy Dashboard [Alchemy](https://alchemy.com/) and get a free API key. You can do this by creating an app.
+4. Visit the Alchemy Dashboard [Alchemy](https://alchemy.com/) and get a free API key. You can do this by creating an app. (I chose the free version and I did not use a credit card of any kind.)
 
 5. We want to run a local Ethereum node. We can deploy and test
 smart contracts without using the Ethereum Mainnet. The fork
@@ -101,7 +101,8 @@ Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
 7. Open a new terminal shell and cd into the Uniswap-Test/uniswap-v3 directory.
 
-8. In this second shell, run the following commands:
+8. In this second shell, run the following command to connect to our local Ethereum node:
+
 ```
 npx hardhat console --network localhost
 
@@ -120,14 +121,27 @@ Type ".help" for more information.
 const { ethers } = require("hardhat");
 ```
 10. We need access to the WETH contract. So, we use the well known address of the WETH contract.
-This is an ERC-20 contract (Wrapped Eth) and trades 1 to 1 with eth. Execute the following line of Javascript.
+
+This is an ERC-20 contract (Wrapped Eth) and trades 1 to 1 with ETH.
+
+We can obtain WETH (Wrapped Ether) by sending ETH (Ether) to the WETH smart contract.
+
+We can also unwrap WETH back into ETH by sending WETH to the contract, which will burn the WETH and return the equivalent amount of ETH to your account.
+
+Execute the following line of Javascript.
+
+As an aside, if the WETH contract is not in our local cache, it will be fetched from Alchemy and placed in the cache for future calls.
+
 
 ```js
 const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 ```
 
-11. We need access to the DAI contract. The DAI contract provides a stable coin so that 1 DAI = 1 USD.
-It also has a well known address. In a later command, we need the DAI_DECIMALs. Execute the following lines of Javascript.
+11. We need access to the DAI contract. The DAI contract provides an ERC-20 stable coin so that 1 DAI = 1 USD. It is part of the MakerDAO system.
+
+You cannot directly send ETH to the DAI contract to receive DAI. Instead, DAI is typically obtained by locking up collateral (such as ETH) in a Maker Vault to generate DAI, or by trading on decentralized exchanges (DEXs) like Uniswap.
+
+The DAI contract also has a well known address. In a later command, we need the DAI_DECIMALs. Execute the following lines of Javascript.
 
 ```js
 const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
