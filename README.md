@@ -1,4 +1,4 @@
-##  Developing Blockchain Use Cases Spring 2024 Lab 4 (Optional work)
+##  Blockchain and SQL Fundamentals Fall 2024 Lab 4 (In class exercise)
 ### Carnegie Mellon University
 ### Due: No due date
 ### 0 Points
