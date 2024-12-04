@@ -330,6 +330,8 @@ contract SimpleSwap {
 ```
 ## Notes on SimpleSwap smart contract
 
+This smart contract is working on our behalf. We could also do these commands in Javascript from the client side.
+
 License and Solidity Version:
 
 The contract is licensed under GPL-2.0-or-later.
