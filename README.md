@@ -284,7 +284,7 @@ await swap.wait();
 
 ```
 
-24. Check our DAI balance by visiting the balanceOf on the DAI contract.
+25. Check our DAI balance by visiting the balanceOf on the DAI contract.
     Execute the following lines of Javascript.
 
 ```js
@@ -294,9 +294,9 @@ const DAIBalance = Number(ethers.formatUnits(newDAIBalance, DAI_DECIMALS));
 console.log("DAI Balance: ", DAIBalance);
 ```
 
-25. Use [this converter](https://www.coinbase.com/converter/eth/dai) to see if we were paid the correct amount of DAI for our WETH.
+26. Use [this converter](https://www.coinbase.com/converter/eth/dai) to see if we were paid the correct amount of DAI for our WETH.
 
-26. Let's examine the contract that is called by this console interaction. Comments have been
+27. Let's examine the contract that is called by this console interaction. Comments have been
 added to the code.
 
 ```
