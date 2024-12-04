@@ -226,7 +226,7 @@ await deposit.wait();
 We can now approve the swap contract to spend 1 WETH. It will need to reduce
 our WETH and increase our DAI. This can be done by running the following commands.
 
-Execute the following line of Javascript.
+Execute the following line of Javascript. Note, the SimpleSwap contract will interact with the router on our behalf. Here, we approve the SimpleSwap contract to spend 1 WETH.
 
 ```js
 await WETH.approve(simpleSwap.target, ethers.parseEther("1"));
@@ -248,7 +248,11 @@ Note, we will not spend more on gas that 300000.
 
 const amountIn = ethers.parseEther("0.1");
 ```
-Perform the swap.
+Perform the swap. Since we are not providing DAI for the swap, there is no need to approve the contract to spend DAI. The DAI will be sent to your address as a result of the swap.
+
+WETH: This is the address of the WETH token contract. It specifies the token you are swapping from.
+
+DAI: This is the address of the DAI token contract. It specifies the token you are swapping to.
 
 ```js
 const swap = await simpleSwap.swapERCforERC(WETH, DAI, amountIn, { gasLimit: 300000 });
@@ -324,3 +328,36 @@ contract SimpleSwap {
     }
 }
 ```
+## Notes on SimpleSwap smart contract
+
+License and Solidity Version:
+
+The contract is licensed under GPL-2.0-or-later.
+It uses Solidity version 0.7.6 and the ABI encoder v2.
+
+Imports:
+
+ISwapRouter: Interface for interacting with the Uniswap V3 swap router.
+
+TransferHelper: Library for safely transferring tokens and handling errors.
+
+Contract Variables:
+
+swapRouter: An immutable reference to the Uniswap V3 router.
+feeTier: A constant representing the fee tier for the liquidity pool (0.3% in this case).
+
+Constructor:
+
+Initializes the contract with a reference to the Uniswap router.
+
+Function swapERCforERC:
+
+Parameters: from (address of the input token), to (address of the output token), amountIn (amount of input tokens to swap).
+
+Token Transfer: Transfers the specified amount of from tokens from the sender to the contract.
+
+Approval: Approves the router to spend the from tokens.
+
+Swap Execution: Creates the parameters for the swap and calls exactInputSingle on the router to execute the swap.
+
+Return Value: Returns the amount of to tokens received from the swap.
