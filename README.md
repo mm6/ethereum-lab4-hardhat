@@ -17,9 +17,11 @@ https://github.com/boomcan90/uniswap-v3
 ## Setup and prerequisites
 
 We will be using git, Node.js, and Hardhat. These tools were installed in Lab 1. In addition, we need to establish an account at Alchemy. You will need a free API key provided by Alchemy.
-We do this so that we can copy a part of the Ethereum Mainnet to our local machine.
+We do this so that we can copy a part of the Ethereum mainnet to our local machine.
 
-We will be using ETH, Wrapped ETH (WETH), DAI, and Uniswap V3.
+We will be using ETH, Wrapped ETH (WETH), DAI, and Uniswap V3
+
+Our objective is to buy some WETH with ETH and then exchange our WETH for the DAI stable coin. DAI is pegged one for one with the US dollar.
 
 0. Create a new directory named Uniswap-Test and, within it, clone a repository.
 
@@ -73,11 +75,11 @@ npm install
 4. Visit the Alchemy Dashboard [Alchemy](https://alchemy.com/) and get a free API key. You can do this by creating an app. (I chose the free version and I did not use a credit card of any kind.)
 
 5. We want to run a local Ethereum node. We can deploy and test
-smart contracts without using the Ethereum Mainnet. The fork
-command creates a local copy of the Mainnet state (a snapshot).
-The url points to an archive node on Alchemy. We will be able to interact with a local node as if it had all of the state of the Mainnet.
+smart contracts without using the Ethereum mainnet. The URL points to an archive node on Alchemy. The fork
+command creates a local copy of the mainnet state (a snapshot).
+We will be able to interact with a local node as if it had all of the state of the mainnet.
 
-Run the following command and replace <API_KEY> with the API key.
+Run the following command and replace <API_KEY> with your API key.
 
 ```
 npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/<API_KEY>
@@ -93,7 +95,7 @@ Accounts
 ========
 
 WARNING: These accounts, and their private keys, are publicly known.
-Any funds sent to them on Mainnet or any other live network WILL BE LOST.
+Any funds sent to them on mainnet or any other live network WILL BE LOST.
 
 Account #0: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (10000 ETH)
 Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
@@ -101,7 +103,7 @@ Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
 7. Open a new terminal shell and cd into the Uniswap-Test/uniswap-v3 directory.
 
-8. In this second shell, run the following command to connect to our local Ethereum node:
+8. In this second shell, run the following command to run the Hardhat console and connect to our local Ethereum node:
 
 ```
 npx hardhat console --network localhost
@@ -120,52 +122,28 @@ Type ".help" for more information.
 ```js
 const { ethers } = require("hardhat");
 ```
-10. We need access to the WETH contract. So, we use the well known address of the WETH contract.
 
-This is an ERC-20 contract (Wrapped Eth) and trades 1 to 1 with ETH.
+10. Next, we need signers (with ETH) who are able to sign transactions. Execute the following line of Javascript.
 
-We can obtain WETH (Wrapped Ether) by sending ETH (Ether) to the WETH smart contract.
+```js
+let signers = await ethers.getSigners();
+```
+11. We need access to the WETH contract. So, we use the well known address of the WETH contract.
+
+The WETH contract is an ERC-20 contract (Wrapped Eth) and trades 1 to 1 with ETH.
+
+We can obtain WETH by sending ETH to the WETH smart contract.
 
 We can also unwrap WETH back into ETH by sending WETH to the contract, which will burn the WETH and return the equivalent amount of ETH to your account.
 
 Execute the following line of Javascript.
 
-As an aside, if the WETH contract is not in our local cache, it will be fetched from Alchemy and placed in the cache for future calls.
-
-
 ```js
 const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 ```
 
-11. We need access to the DAI contract. The DAI contract provides an ERC-20 stable coin so that 1 DAI = 1 USD. It is part of the MakerDAO system.
-
-You cannot directly send ETH to the DAI contract to receive DAI. Instead, DAI is typically obtained by locking up collateral (such as ETH) in a Maker Vault to generate DAI, or by trading on decentralized exchanges (DEXs) like Uniswap.
-
-The DAI contract also has a well known address. In a later command, we need the DAI_DECIMALs. Execute the following lines of Javascript.
-
-```js
-const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
-const DAI_DECIMALS = 18;
-```
-
-12. A swap router is an important player and is used to facilitate token swaps between
-different ERC-20 tokens. A user can swap one token for another without using a
-centralized exchange.
-
-Liquidity providers place tokens into liquidity pools. The swap router interacts with
-these pools to provide liquidity for trading pairs. The router can determine the path (sequence
-of tokens) to achieve the desired swap. The swap router collects trading fees (e.g. 0.3% in Uniswap v2)
-from users and these fees are distributed to liquidity providers based upon the liquidity
-providers contribution to the pool.
-
-Here, we use the well known address of the uniswap router. Execute the following line of Javascript.
-
-```js
-const SwapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
-```
-
-13. Here, we define an Application Binary Interface (ABI) for the ERC-20 contracts. The function
-signatures are defined so that the caller will know how to encode the requests. Execute the following lines of Javascript.
+12. We want to communicate with the WETH contract. Here, we define an Application Binary Interface (ABI) for the ERC-20 contract. The function
+signatures are defined so that the caller will know how to encode the requests. Note that one of the functions is marked as payable and can accept ETH. Execute the following lines of Javascript.
 
 ```js
 const ercAbi = [
@@ -177,26 +155,11 @@ const ercAbi = [
   "function approve(address spender, uint256 amount) returns (bool)",
 ];
 ```
-14. Next, we deploy a simple swap contract. Note that it needs to know the address of the swap router.
-Execute the following lines of Javascript.
+13. Establish a local JavaScript object named WETH containing information that we need to perform a transaction.
 
-```js
-/* Deploy the SimpleSwap contract */
-const simpleSwapFactory = await ethers.getContractFactory("SimpleSwap");
-const simpleSwap = await simpleSwapFactory.deploy(SwapRouterAddress);
-await simpleSwap.waitForDeployment();
-```
+There is no deployment here. This WETH contract already exists on the mainnet.
 
-15. Next, we need signers (with ETH) who are able to sign transactions. Execute the following line of Javascript.
-
-```js
-let signers = await ethers.getSigners();
-```
-
-16. Establish a constant (WETH) containing information that we need to perform
-a transaction.
-
-There is no deployment here. This contract already exists on the mainnet.
+As an aside, if the WETH contract is not in our local cache, it will be fetched from Alchemy and placed in the cache for future calls.
 
 We are using the first account (signers[0]) to sign and pay for transactions.
 
@@ -207,8 +170,15 @@ Execute the following line of Javascript.
 const WETH = new ethers.Contract(WETH_ADDRESS, ercAbi, signers[0]);
 ```
 
-17. Trade ETH for some WETH. Place the WETH into our account on the WETH contract.
-We are sending 10 eth to the WETH contract in exchange for 10 WETH.
+14. Check on how much WETH we currently own.
+
+```
+const wethbalance = await WETH.balanceOf(signers[0].address);
+wethbalance
+```
+
+15. Trade ETH for some WETH. Place the WETH into our account on the WETH contract.
+We are sending 10 ETH to the WETH contract in exchange for 10 WETH. The first signer is paying 10 ETH plus transaction fees.
 Execute the following line of Javascript.
 
 ```js
@@ -219,36 +189,90 @@ Wait for the deposit to complete.
 ```js
 await deposit.wait();
 ```
-
-18. The approve call is essential for granting permission to the decentralized exchange
-(DEX) contract to handle token transfers on behalf of the user during swaps.
-
-We can now approve the swap contract to spend 1 WETH. It will need to reduce
-our WETH and increase our DAI. This can be done by running the following commands.
-
-Execute the following line of Javascript. Note, the SimpleSwap contract will interact with the router on our behalf. Here, we approve the SimpleSwap contract to spend 1 WETH.
+16. Check on how much WETH we own now.
 
 ```js
-await WETH.approve(simpleSwap.target, ethers.parseEther("1"));
+const balanceAfterDeposit = await WETH.balanceOf(signers[0].address);
+balanceAfterDeposit
 ```
 
-19. Finally, we're ready to swap our WETH for DAI.
+17. We need access to the DAI contract. The DAI contract provides an ERC-20 stable coin so that 1 DAI = 1 USD. It is part of the MakerDAO system.
 
-Get access to the DAI contract. Execute the following line of Javascript.
+Soon, we will use Uniswap to exchange our WETH for DAI.
+
+You cannot send ETH to the DAI contract directly to receive DAI. Instead, DAI is typically obtained by locking up collateral (such as ETH) in a Maker Vault to generate DAI, or by trading on decentralized exchanges (DEXs) like Uniswap. We can, however,  exchange ETH for DAI using Uniswap. Here, we are using WETH to buy DAI.
+
+The DAI contract also has a well known address. In a later command, we need the DAI_DECIMALs. Execute the following lines of Javascript.
+
+```js
+const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+const DAI_DECIMALS = 18;
+```
+18. Get access to the DAI contract. Execute the following line of Javascript.
 
 ```js
 
 const DAI = new ethers.Contract(DAI_ADDRESS, ercAbi, signers[0]);
 ```
 
-Establish the amount to exchange. This is .1, the amount of WETH to be swapped.
-Note, we will not spend more on gas that 300000.
+19. How much DAI do we own?
+
+```
+const initialDAIBalance = await DAI.balanceOf(signers[0].address);
+const startingDAIBalance = Number(ethers.formatUnits(initialDAIBalance, DAI_DECIMALS));
+console.log("DAI Balance: ", startingDAIBalance);
+
+```
+20. The answer may show 1e-18 which is effectively zero.
+
+21. A swap router is part of Uniswap and is used to facilitate token swaps between
+different ERC-20 tokens. A user can swap one token for another without using a
+centralized exchange.
+
+Liquidity providers place tokens into liquidity pools. The swap router interacts with
+these pools to provide liquidity for trading pairs. The router can determine the path (sequence
+of tokens) to achieve the desired swap. The swap router collects trading fees (e.g. 0.3% in Uniswap v2)
+from users and these fees are distributed to liquidity providers based upon the liquidity
+providers contribution to the pool.
+
+Here, we use the well known address of the Uniswap router. Execute the following line of Javascript.
+
+```js
+const SwapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
+```
+
+
+22. Next, we deploy a simple swap contract. Note that it needs to know the address of the swap router.
+Execute the following lines of Javascript.
+
+```js
+/* Deploy the SimpleSwap contract */
+const simpleSwapFactory = await ethers.getContractFactory("SimpleSwap");
+const simpleSwap = await simpleSwapFactory.deploy(SwapRouterAddress);
+await simpleSwap.waitForDeployment();
+```
+
+23. Next, we make an 'approval' call to grant permission for the SimpleSwap contract to access our WETH. The SimpleSwap contract will, in turn, grant approval to the decentralized exchange
+(DEX) to spend our WETH.
+
+Here, we approve the swap contract (SimpleSwap) to spend 1 WETH.
+
+Execute the following line of Javascript. Note that later, the SimpleSwap contract will interact with the Uniswap router on our behalf. Here, we approve the SimpleSwap contract to spend 1 WETH.
+
+```js
+await WETH.approve(simpleSwap.target, ethers.parseEther("1"));
+```
+
+24. Establish the amount of WETH to exchange for DAI. This is .1, the amount of WETH to be swapped.
+
 
 ```js
 
 const amountIn = ethers.parseEther("0.1");
 ```
 Perform the swap. Since we are not providing DAI for the swap, there is no need to approve the contract to spend DAI. The DAI will be sent to your address as a result of the swap.
+
+Note, we will not spend more on gas that 300000.
 
 WETH: This is the address of the WETH token contract. It specifies the token you are swapping from.
 
@@ -260,17 +284,19 @@ await swap.wait();
 
 ```
 
-20. Check our DAI balance by visiting the balanceOf on the DAI contract.
+24. Check our DAI balance by visiting the balanceOf on the DAI contract.
     Execute the following lines of Javascript.
 
 ```js
 
-const expandedDAIBalance = await DAI.balanceOf(signers[0].address);
-const DAIBalance = Number(ethers.formatUnits(expandedDAIBalance, DAI_DECIMALS));
+const newDAIBalance = await DAI.balanceOf(signers[0].address);
+const DAIBalance = Number(ethers.formatUnits(newDAIBalance, DAI_DECIMALS));
 console.log("DAI Balance: ", DAIBalance);
 ```
 
-21. Let's examine the contract that is called by this console interaction. Comments have been
+25. Use [this converter](https://www.coinbase.com/converter/eth/dai) to see if we were paid the correct amount of DAI for our WETH.
+
+26. Let's examine the contract that is called by this console interaction. Comments have been
 added to the code.
 
 ```
