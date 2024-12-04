@@ -290,37 +290,45 @@ import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
 
 contract SimpleSwap {
     ISwapRouter public immutable swapRouter;
-    uint24 public constant feeTier = 3000;    // Three fee tier's are available
-                                              // These are .05%, .30 %, and 1.00%.
-                                              // 1.00% is used for pools with less
-                                              // liquidity.
+    uint24 public constant feeTier = 3000;    
 
-    // Inititialze SimpleSwap with a reference to the Uniswap router.
+    // Three fee tier's are available
+    // These are .05%, .30 %, and 1.00%.
+    // 1.00% is used for pools with less
+    // liquidity.
+
+    // Inititialze SimpleSwap with a reference to the
+    // Uniswap router.
     constructor(ISwapRouter _swapRouter) {
         swapRouter = _swapRouter;
     }
 
-    // The arguments from and to are pointers to the two token contracts.
+    // The arguments from and to are pointers to the two
+    // token contracts.
     function swapERCforERC(address from, address to, uint amountIn) external returns (uint256 amountOut) {
 
         // Transfer the specified amount of ERC to this contract.
         // msg.sender is a holder of the from tokens.
-        // We are taking tokens from the sender and giving the contract ownership.
+        // We are taking tokens from the sender and giving the
+        // contract ownership. The holder must have approved
+        // the contract to spend these tokens on the holder's
+        // behalf.
         TransferHelper.safeTransferFrom(from, msg.sender, address(this), amountIn);
         // Approve the router to spend ERC.
-        // This approval is necessary for the router to execute the swap on behalf of the contract.
+        // This approval is necessary for the router to
+        // execute the swap on behalf of the contract.
         TransferHelper.safeApprove(from, address(swapRouter), amountIn);
         // Create the params that will be used to execute the swap
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
-                tokenIn: from,                  // The from token
-                tokenOut: to,                   // The to token
-                fee: feeTier,                   // Each liquidity pool has a specific fee tier
-                recipient: msg.sender,          // The receiver of the to token
-                deadline: block.timestamp,      // The deadline when the swap must be executed
-                amountIn: amountIn,             // The amount of the from token
-                amountOutMinimum: 0,            // Minimal acceptable out token
-                sqrtPriceLimitX96: 0            // When not zero, allows control of price impact of swaps
+                tokenIn: from,        // The from token
+                tokenOut: to,         // The to token
+                fee: feeTier,         // Each liquidity pool has a specific fee tier
+                recipient: msg.sender, // The receiver of the to token
+                deadline: block.timestamp, // The deadline when the swap must be executed
+                amountIn: amountIn,       // The amount of the from token
+                amountOutMinimum: 0,     // Minimal acceptable out token
+                sqrtPriceLimitX96: 0    // When not zero, allows control of price impact of swaps
             });
         // The call to `exactInputSingle` executes the swap.
         amountOut = swapRouter.exactInputSingle(params);
