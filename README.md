@@ -307,11 +307,10 @@ contract SimpleSwap {
     // token contracts.
     function swapERCforERC(address from, address to, uint amountIn) external returns (uint256 amountOut) {
 
-        // Transfer the specified amount of ERC to this contract.
-        // msg.sender is a holder of the from tokens.
-        // We are taking tokens from the sender and giving the
-        // contract ownership. The holder must have approved
-        // the contract to spend these tokens on the holder's
+        // Transfer the specified amount of 'from' tokens to this contract.
+        // msg.sender is a holder of the 'from' tokens.
+        // We are transferring tokens from the sender to this contract. The sender must have approved
+        // this contract to spend these tokens on the their
         // behalf.
         TransferHelper.safeTransferFrom(from, msg.sender, address(this), amountIn);
         // Approve the router to spend ERC.
