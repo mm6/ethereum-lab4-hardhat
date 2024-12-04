@@ -370,3 +370,38 @@ Approval: Approves the router to spend the from tokens.
 Swap Execution: Creates the parameters for the swap and calls exactInputSingle on the router to execute the swap.
 
 Return Value: Returns the amount of to tokens received from the swap.
+
+## Preconditions before calling SimpleSwap
+
+Before calling the swapERCforERC function in this SimpleSwap contract, there are several preconditions that must be met to ensure the function executes successfully:
+
+Token Approval:
+
+The user must approve the SimpleSwap contract to spend the specified amount of the from token (e.g., WETH) on their behalf.
+This is done using the approve function of the from token's ERC-20 contract.
+await WETH.approve(simpleSwap.address, amountIn);
+
+Sufficient Token Balance:
+
+The user must have a sufficient balance of the from token in their wallet to cover the amount they want to swap.
+Ensure the amountIn specified in the function call does not exceed the user's token balance.
+
+Contract Deployment:
+
+The SimpleSwap contract must be deployed on the Ethereum network and its address known.
+
+The contract should be initialized with a reference to the Uniswap V3 router.
+
+Network Connection:
+
+The user must be connected to the Ethereum network via a provider (e.g., Infura, Alchemy) and have a wallet set up with sufficient ETH to cover gas fees for the transaction.
+
+Gas Limit:
+
+Ensure that the transaction includes an appropriate gas limit to cover the execution of the swap.
+const swap = await simpleSwap.swapERCforERC(WETH, DAI, amountIn, { gasLimit: 300000 });
+
+Valid Token Addresses:
+
+The from and to parameters must be valid ERC-20 token contract addresses.
+Ensure that the tokens are supported by Uniswap V3 and have sufficient liquidity in the relevant pool.
