@@ -242,7 +242,10 @@ const SwapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 ```
 
 
-22. Next, we deploy a simple swap contract. Note that it needs to know the address of the swap router.
+22. Next, we deploy a simple swap contract named SimpleSwap. This contract should be in your contracts directory.
+
+SimpleSwap needs to be deployed with the address of the swap router.
+
 Execute the following lines of Javascript.
 
 ```js
