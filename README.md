@@ -336,6 +336,12 @@ contract SimpleSwap {
     // token contracts.
     function swapERCforERC(address from, address to, uint amountIn) external returns (uint256 amountOut) {
 
+        // The 'from' variable is the address of an ERC-20 contract.
+        // When called from JavaScript, a JavaScript contract object
+        // may be specified. JavaScript's ethers knows to extract
+        // the address and 
+        // pass the address across the network.
+
         // Transfer the specified amount of 'from' tokens to this contract.
         // msg.sender is a holder of the 'from' tokens.
         // We are transferring tokens from the sender to this contract. The sender must have approved
@@ -345,6 +351,14 @@ contract SimpleSwap {
         // Approve the router to spend ERC.
         // This approval is necessary for the router to
         // execute the swap on behalf of the contract.
+        // The safeApprove function internally calls the ERC20
+        // approve method on the WETH contract. This method updates
+        // the allowance mapping in the WETH contract, setting the
+        // allowance for the swapRouter to spend the specified
+        // amountIn of WETH on behalf of the SimpleSwap contract.
+        // The safeApprove method knows to call the WETH contract
+        // because the 'from' field is the address of the WETH
+        // contract.
         TransferHelper.safeApprove(from, address(swapRouter), amountIn);
         // Create the params that will be used to execute the swap
         ISwapRouter.ExactInputSingleParams memory params =
