@@ -1,4 +1,4 @@
-##  Blockchain and SQL Fundamentals Fall 2024 Lab 4 (In-class exercise)
+##  Developing Blockchain Use Cases Spring 2025 Lab 4 (In-class exercise)
 ### Carnegie Mellon University
 ### Due: No due date
 ### 0 Points
@@ -32,10 +32,11 @@ git clone https://github.com/mm6/uniswap-v3.git
 
 ```
 
-1. cd into the new directory named uniswap-v3.
+1. cd into the new directory named uniswap-v3 and install the most recent version of Hardhat.
 
 ```
 cd uniswap-v3
+npm install --save-dev hardhat@latest
 
 ```
 2. Edit the file hardhat.config.js so that it contains the following content:
@@ -339,7 +340,7 @@ contract SimpleSwap {
         // The 'from' variable is the address of an ERC-20 contract.
         // When called from JavaScript, a JavaScript contract object
         // may be specified. JavaScript's ethers knows to extract
-        // the address and 
+        // the address and
         // pass the address across the network.
 
         // Transfer the specified amount of 'from' tokens to this contract.
