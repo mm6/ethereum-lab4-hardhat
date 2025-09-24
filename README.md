@@ -78,8 +78,10 @@ npm install --save-dev @nomicfoundation/hardhat-toolbox
 4. Visit the Alchemy Dashboard [Alchemy](https://alchemy.com/) and get a free API key. You can do this by creating an app. (I chose the free version and I did not use a credit card of any kind.) You can provide a name, description, and use case. Choose the chain as Ethereum and select Node API. Select the copy button next to the network URL. You should have a URL
 like this:
 
+```
 https://eth-mainnet.g.alchemy.com/v2/<API Key>
 
+```
 5. We want to run a local Ethereum node. We can deploy and test
 smart contracts without using the Ethereum mainnet. The URL points to an archive node on Alchemy. The fork
 command creates a local copy of the mainnet state (a snapshot).
