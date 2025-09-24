@@ -32,11 +32,12 @@ git clone https://github.com/mm6/uniswap-v3.git
 
 ```
 
-1. cd into the new directory named uniswap-v3 and install the most recent version of Hardhat.
+1. cd into the new directory named uniswap-v3 and install the 2.14.0 version of Hardhat.
 
 ```
 cd uniswap-v3
-npm install --save-dev hardhat@latest
+
+npm install --save-dev hardhat@^2.14.0
 
 ```
 2. Edit the file hardhat.config.js so that it contains the following content:
@@ -69,7 +70,8 @@ module.exports = {
 3. Run the following command to install dependencies and populate the node_modules directory:
 
 ```
-npm install
+
+npm install --save-dev @nomicfoundation/hardhat-toolbox
 
 ```
 
