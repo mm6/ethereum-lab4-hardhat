@@ -190,8 +190,12 @@ We are sending 10 ETH to the WETH contract in exchange for 10 WETH. The first si
 Execute the following line of Javascript.
 
 ```js
-const deposit = await WETH.deposit({ value: ethers.parseEther("10") });
+const deposit = await WETH.deposit({
+  value: ethers.parseEther("10"),
+  gasLimit: 100_000
+});
 ```
+
 Wait for the deposit to complete.
 
 ```js
