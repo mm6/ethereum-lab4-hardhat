@@ -187,6 +187,9 @@ wethbalance
 
 15. Trade ETH for some WETH. Place the WETH into our account on the WETH contract.
 We are sending 10 ETH to the WETH contract in exchange for 10 WETH. The first signer is paying 10 ETH plus transaction fees.
+
+We authorize this transaction to execute, but if it hasn’t finished by the time it uses 100,000 gas, we want to abort and revert.
+
 Execute the following line of Javascript.
 
 ```js
@@ -212,7 +215,10 @@ balanceAfterDeposit
 
 Soon, we will use Uniswap to exchange our WETH for DAI.
 
-You cannot send ETH to the DAI contract directly to receive DAI. Instead, DAI is typically obtained by locking up collateral (such as ETH) in a Maker Vault to generate DAI, or by trading on decentralized exchanges (DEXs) like Uniswap. We can, however,  exchange ETH for DAI using Uniswap. Here, we are using WETH to buy DAI.
+You cannot send ETH to the DAI contract directly to receive DAI. Instead, DAI is typically obtained by locking up collateral (such as ETH) in a Maker Vault to generate DAI, or by trading on decentralized exchanges (DEXs) like Uniswap. We can, however, exchange ETH for DAI using Uniswap. Here, we are using WETH to buy DAI.
+
+In other words, minting happens in Maker protocol contracts while
+trading happens in decentralized exchange contracts. The DAI token contract itself never accepts ETH for minting.
 
 The DAI contract also has a well known address. In a later command, we need the DAI_DECIMALs. Execute the following lines of Javascript.
 
@@ -235,7 +241,7 @@ const startingDAIBalance = Number(ethers.formatUnits(initialDAIBalance, DAI_DECI
 console.log("DAI Balance: ", startingDAIBalance);
 
 ```
-20. The answer should be 0. 
+20. The answer should be 0.
 
 21. A swap router is part of Uniswap and is used to facilitate token swaps between
 different ERC-20 tokens. A user can swap one token for another without using a
@@ -333,10 +339,15 @@ contract SimpleSwap {
     ISwapRouter public immutable swapRouter;
     uint24 public constant feeTier = 3000;    
 
-    // Three fee tier's are available
-    // These are .05%, .30 %, and 1.00%.
-    // 1.00% is used for pools with less
-    // liquidity.
+    // Uniswap v3 supports three fee tiers:
+    // 0.05%, 0.30%, and 1.00%.
+    // Higher fees compensate liquidity providers
+    // for increased price volatility.
+    // For example:
+
+    // 0.05% → Very stable pairs (e.g., USDC/DAI)
+    // 0.30% → Typical volatile pairs (e.g., ETH/DAI)
+    // 1.00% → Highly volatile or exotic pairs
 
     // Inititialze SimpleSwap with a reference to the
     // Uniswap router.
@@ -356,9 +367,15 @@ contract SimpleSwap {
 
         // Transfer the specified amount of 'from' tokens to this contract.
         // msg.sender is a holder of the 'from' tokens.
-        // We are transferring tokens from the sender to this contract. The sender must have approved
+        // We are transferring tokens from the sender to this contract.
+        // The sender must have approved
         // this contract to spend these tokens on the their
         // behalf.
+        // The parameter from is the ERC20Token contract (WETH)
+        // The sender has that WETH and
+        // is giving it to the contract address(this).
+        // Spend the allowance I already have provided and actually move the
+        // tokens now.
         TransferHelper.safeTransferFrom(from, msg.sender, address(this), amountIn);
         // Approve the router to spend ERC.
         // This approval is necessary for the router to
@@ -371,6 +388,9 @@ contract SimpleSwap {
         // The safeApprove method knows to call the WETH contract
         // because the 'from' field is the address of the WETH
         // contract.
+        // This line is approving the Uniswap SwapRouter to spend a token that
+        // SimpleSwap now owns.
+
         TransferHelper.safeApprove(from, address(swapRouter), amountIn);
         // Create the params that will be used to execute the swap
         ISwapRouter.ExactInputSingleParams memory params =
@@ -379,10 +399,14 @@ contract SimpleSwap {
                 tokenOut: to,         // The to token
                 fee: feeTier,         // Each liquidity pool has a specific fee tier
                 recipient: msg.sender, // The receiver of the to token
-                deadline: block.timestamp, // The deadline when the swap must be executed
+                deadline: block.timestamp, // The deadline when the swap must
+                                           // be executed, better to add minutes
                 amountIn: amountIn,       // The amount of the from token
-                amountOutMinimum: 0,     // Minimal acceptable out token
-                sqrtPriceLimitX96: 0    // When not zero, allows control of price impact of swaps
+                amountOutMinimum: 0,     // Not normally 0, Minimal acceptable
+                                         //out token
+                sqrtPriceLimitX96: 0    // When not zero, allows control of price
+
+                                        // impact of swaps
             });
         // The call to `exactInputSingle` executes the swap.
         amountOut = swapRouter.exactInputSingle(params);
