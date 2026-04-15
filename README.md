@@ -275,7 +275,7 @@ Here, we approve the swap contract (SimpleSwap) to spend 1 WETH.
 Execute the following line of Javascript. Note that later, the SimpleSwap contract will interact with the Uniswap router on our behalf. Here, we approve the SimpleSwap contract to spend 1 WETH.
 
 ```js
-await WETH.approve(simpleSwap.target, ethers.parseEther("1"));
+await WETH.approve(simpleSwap.target, ethers.parseEther("1"),{gasLimit: 100_000});
 ```
 
 24. Establish the amount of WETH to exchange for DAI. This is .1, the amount of WETH to be swapped.
