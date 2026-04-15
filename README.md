@@ -263,7 +263,7 @@ Execute the following lines of Javascript.
 ```js
 /* Deploy the SimpleSwap contract */
 const simpleSwapFactory = await ethers.getContractFactory("SimpleSwap");
-const simpleSwap = await simpleSwapFactory.deploy(SwapRouterAddress);
+const simpleSwap = await simpleSwapFactory.deploy(SwapRouterAddress, { gasLimit: 3_000_000 });
 await simpleSwap.waitForDeployment();
 ```
 
