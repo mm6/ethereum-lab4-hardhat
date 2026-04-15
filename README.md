@@ -317,8 +317,8 @@ console.log("DAI Balance: ", DAIBalance);
 
 26. Use [this converter](https://www.coinbase.com/converter/eth/dai) to see if we were paid the correct amount of DAI for our WETH.
 
-27. Let's examine the contract that is called by this console interaction. Comments have been
-added to the code.
+27. A high level summary of what we have done is the following:
+Alice wraps her ETH into WETH, approves the SimpleSwap contract to spend it, and SimpleSwap pulls the WETH into its own custody. SimpleSwap then approves the Uniswap router, which pulls the WETH from SimpleSwap, swaps it through a Uniswap pool, and sends the resulting DAI directly to Alice.
 
 ```
 // SPDX-License-Identifier: GPL-2.0-or-later
