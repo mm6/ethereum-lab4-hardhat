@@ -1,4 +1,4 @@
-##  Developing Blockchain Use Cases Spring 2025 Lab 4 (In-class exercise)
+##  Developing Blockchain Use Cases Spring 2026 Lab 4 (In-class exercise)
 ### Carnegie Mellon University
 ### Due: No due date
 ### 0 Points
@@ -235,7 +235,7 @@ const startingDAIBalance = Number(ethers.formatUnits(initialDAIBalance, DAI_DECI
 console.log("DAI Balance: ", startingDAIBalance);
 
 ```
-20. The answer may show 1e-18 which is effectively zero.
+20. The answer should be 0. 
 
 21. A swap router is part of Uniswap and is used to facilitate token swaps between
 different ERC-20 tokens. A user can swap one token for another without using a
